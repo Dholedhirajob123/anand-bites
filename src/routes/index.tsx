@@ -15,13 +15,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Anand Bal Bhandar — गरमागरम नाश्ता ऑनलाइन" },
+      { title: "Anand Bel Bhandar — गरमागरम नाश्ता ऑनलाइन" },
       {
         name: "description",
         content:
-          "Order fresh Bel, Mung Vada and Samosa online from Anand Bal Bhandar. ताजे आणि चविष्ट नाश्त्याचे पदार्थ, फक्त ₹15.",
+          "Order fresh Bel, Mung Vada and Samosa online from Anand Bel Bhandar. ताजे आणि चविष्ट नाश्त्याचे पदार्थ, फक्त ₹15.",
       },
-      { property: "og:title", content: "Anand Bal Bhandar — गरमागरम नाश्ता ऑनलाइन" },
+      { property: "og:title", content: "Anand Bel Bhandar — गरमागरम नाश्ता ऑनलाइन" },
       {
         property: "og:description",
         content: "Bel, Mung Vada आणि Samosa — ताजे, गरम आणि ऑनलाइन ऑर्डरसाठी तयार.",
@@ -91,7 +91,7 @@ function Home() {
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <a href="#home" className="text-lg font-bold leading-tight text-primary">
-            Anand Bal Bhandar
+            Anand Bel Bhandar
           </a>
           <nav className="flex items-center gap-3 text-sm font-semibold">
             <a href="#home" className="hidden sm:inline">
@@ -121,7 +121,7 @@ function Home() {
       <section id="home" className="relative">
         <img
           src={hero}
-          alt="Anand Bal Bhandar snack counter with hot samosas and bhel"
+          alt="Anand Bel Bhandar snack counter with hot samosas and bhel"
           width={1400}
           height={900}
           className="h-[62vh] min-h-72 w-full object-cover"
@@ -129,7 +129,7 @@ function Home() {
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/45 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-4 pb-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-accent">
-            Anand Bal Bhandar
+            Anand Bel Bhandar
           </p>
           <h1 className="mt-2 text-3xl font-bold leading-snug text-primary-foreground sm:text-4xl">
             गरमागरम नाश्ता, आता ऑनलाइन ऑर्डर करा!
@@ -203,7 +203,7 @@ function Home() {
       {/* Address */}
       <section id="contact" className="mx-auto max-w-3xl px-4 pb-10">
         <div className="card-soft p-5">
-          <h2 className="text-xl font-bold">📍 Anand Bal Bhandar</h2>
+          <h2 className="text-xl font-bold">📍 Anand Bel Bhandar</h2>
           <p className="mt-1 text-muted-foreground">Address: {SHOP.address}</p>
           <a
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -221,7 +221,7 @@ function Home() {
       {/* Final CTA */}
       <section className="warm-gradient px-4 py-12 text-center">
         <h2 className="text-2xl font-bold text-primary-foreground">
-          आजच ऑर्डर करा – Anand Bal Bhandar
+          आजच ऑर्डर करा – Anand Bel Bhandar
         </h2>
         <a
           href="#menu"
@@ -232,7 +232,7 @@ function Home() {
       </section>
 
       <footer className="px-4 py-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Anand Bal Bhandar ·{" "}
+        © {new Date().getFullYear()} Anand Bel Bhandar ·{" "}
         <Link to="/admin" className="font-semibold text-primary">
           Owner Orders
         </Link>
