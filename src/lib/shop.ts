@@ -32,7 +32,7 @@ export type Order = {
   name: string;
   phone: string;
   address: string;
-  note?: string;
+  note?: string | undefined;
   items: CartLine[];
   total: number;
   status: OrderStatus;
