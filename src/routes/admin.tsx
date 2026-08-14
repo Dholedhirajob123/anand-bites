@@ -12,13 +12,13 @@ import {
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Orders Dashboard — Anand Bal Bhandar" },
+      { title: "Orders Dashboard — Anand Bel Bhandar" },
       {
         name: "description",
         content:
-          "Owner dashboard for Anand Bal Bhandar: view incoming snack orders, customer details and update order status.",
+          "Owner dashboard for Anand Bel Bhandar: view incoming snack orders, customer details and update order status.",
       },
-      { property: "og:title", content: "Orders Dashboard — Anand Bal Bhandar" },
+      { property: "og:title", content: "Orders Dashboard — Anand Bel Bhandar" },
       {
         property: "og:description",
         content: "View incoming orders and update their status.",
