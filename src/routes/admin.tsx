@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
+  PRODUCTS,
+  loadAvailability,
+  saveAvailability,
   loadOrders,
   saveOrders,
   rupees,
   ORDER_STATUSES,
+  type Availability,
   type Order,
   type OrderStatus,
 } from "@/lib/shop";
@@ -45,6 +49,17 @@ function AdminPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [day, setDay] = useState(() => dayKey(new Date()));
   const [detail, setDetail] = useState<Order | null>(null);
+  const [avail, setAvail] = useState<Availability>({});
+
+  useEffect(() => {
+    if (authed) setAvail(loadAvailability());
+  }, [authed]);
+
+  const toggleAvail = (id: string) => {
+    const next = { ...avail, [id]: !(avail[id] ?? true) };
+    setAvail(next);
+    saveAvailability(next);
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem(AUTH_KEY) === "1") setAuthed(true);
@@ -145,6 +160,36 @@ function AdminPage() {
           </button>
         </div>
       </div>
+
+      {/* Item availability */}
+      <section className="card-soft mt-5 p-4">
+        <h2 className="font-bold">Item Availability</h2>
+        <p className="text-sm text-muted-foreground">
+          Turn an item off and customers cannot add it to the cart.
+        </p>
+        <div className="mt-3 space-y-2">
+          {PRODUCTS.map((p) => {
+            const on = avail[p.id] ?? true;
+            return (
+              <div key={p.id} className="flex items-center justify-between gap-3 rounded-2xl bg-secondary p-3">
+                <span className="font-semibold">
+                  {p.name} <span className="text-muted-foreground">· {p.marathi}</span>
+                </span>
+                <button
+                  onClick={() => toggleAvail(p.id)}
+                  className={`rounded-full px-4 py-2 text-sm font-bold ${
+                    on
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-destructive text-destructive-foreground"
+                  }`}
+                >
+                  {on ? "Available" : "Not available"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Date picker */}
       <div className="card-soft mt-5 p-4">
