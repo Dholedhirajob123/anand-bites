@@ -44,6 +44,7 @@ function AdminPage() {
   const [err, setErr] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [day, setDay] = useState(() => dayKey(new Date()));
+  const [detail, setDetail] = useState<Order | null>(null);
 
   useEffect(() => {
     if (sessionStorage.getItem(AUTH_KEY) === "1") setAuthed(true);
