@@ -227,8 +227,108 @@ function AdminPage() {
                   ))}
                 </div>
               </div>
+              <button
+                onClick={() => setDetail(o)}
+                className="mt-3 w-full rounded-full border border-primary py-2.5 text-sm font-bold text-primary"
+              >
+                View Details
+              </button>
             </article>
           ))}
+        </div>
+      )}
+
+      {/* Order Details Modal */}
+      {detail && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/50 p-4 sm:items-center">
+          <div className="absolute inset-0" onClick={() => setDetail(null)} />
+          <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-card p-5 shadow-xl sm:rounded-3xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">Order Details</h2>
+              <button onClick={() => setDetail(null)} className="text-2xl leading-none">
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-2 rounded-2xl bg-secondary p-4 text-sm">
+              <p>
+                <span className="font-semibold text-muted-foreground">Order ID:</span>{" "}
+                <span className="font-bold text-primary">{detail.id}</span>
+              </p>
+              <p>
+                <span className="font-semibold text-muted-foreground">Order Time:</span>{" "}
+                {new Date(detail.createdAt).toLocaleString()}
+              </p>
+              <p>
+                <span className="font-semibold text-muted-foreground">Customer Name:</span>{" "}
+                {detail.name}
+              </p>
+              <p>
+                <span className="font-semibold text-muted-foreground">Mobile Number:</span>{" "}
+                {detail.phone}
+              </p>
+              <p>
+                <span className="font-semibold text-muted-foreground">Address:</span>{" "}
+                {detail.address}
+              </p>
+              {detail.note && (
+                <p>
+                  <span className="font-semibold text-muted-foreground">Note:</span>{" "}
+                  {detail.note}
+                </p>
+              )}
+              <p>
+                <span className="font-semibold text-muted-foreground">Status:</span>{" "}
+                <span className="rounded-full bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">
+                  {detail.status}
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-4 rounded-2xl bg-secondary p-4">
+              <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Ordered Items</h3>
+              <ul className="space-y-2 text-sm">
+                {detail.items.map((i) => (
+                  <li key={i.id} className="flex items-center justify-between">
+                    <span>
+                      {i.name} × {i.qty}
+                    </span>
+                    <span className="font-semibold">{rupees(i.price * i.qty)}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 flex items-center justify-between border-t pt-3 text-lg font-bold">
+                <span>Total</span>
+                <span className="text-primary">{rupees(detail.total)}</span>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {ORDER_STATUSES.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => {
+                    setStatus(detail.id, s);
+                    setDetail({ ...detail, status: s });
+                  }}
+                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
+                    detail.status === s
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground hover:bg-accent"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setDetail(null)}
+              className="mt-4 w-full rounded-full warm-gradient py-3 text-lg font-bold text-primary-foreground"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
     </main>
