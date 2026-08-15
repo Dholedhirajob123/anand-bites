@@ -64,3 +64,24 @@ export function newOrderId() {
 }
 
 export const rupees = (n: number) => `₹${n}`;
+
+/* ---- Item availability (owner controlled) ---- */
+const AVAIL_KEY = "abb_availability";
+
+export type Availability = Record<string, boolean>;
+
+export function loadAvailability(): Availability {
+  const base: Availability = Object.fromEntries(PRODUCTS.map((p) => [p.id, true]));
+  if (typeof window === "undefined") return base;
+  try {
+    return { ...base, ...(JSON.parse(localStorage.getItem(AVAIL_KEY) ?? "{}") as Availability) };
+  } catch {
+    return base;
+  }
+}
+
+export function saveAvailability(a: Availability) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(AVAIL_KEY, JSON.stringify(a));
+  window.dispatchEvent(new Event("abb-availability-updated"));
+}
