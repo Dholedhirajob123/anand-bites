@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import hero from "@/assets/hero.jpg";
 import {
   PRODUCTS,
@@ -8,6 +8,8 @@ import {
   saveOrders,
   newOrderId,
   rupees,
+  loadAvailability,
+  type Availability,
   type CartLine,
   type Order,
 } from "@/lib/shop";
@@ -42,11 +44,26 @@ function Home() {
   const [step, setStep] = useState<Step>("cart");
   const [placed, setPlaced] = useState<Order | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", address: "", note: "" });
+  const [avail, setAvail] = useState<Availability>(() =>
+    Object.fromEntries(PRODUCTS.map((p) => [p.id, true])),
+  );
+
+  useEffect(() => {
+    const sync = () => setAvail(loadAvailability());
+    sync();
+    window.addEventListener("abb-availability-updated", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("abb-availability-updated", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
   const total = useMemo(() => cart.reduce((s, l) => s + l.price * l.qty, 0), [cart]);
   const count = cart.reduce((s, l) => s + l.qty, 0);
 
   const addToCart = (id: string) => {
+    if (avail[id] === false) return;
     const p = PRODUCTS.find((x) => x.id === id)!;
     const add = qty[id] ?? 1;
     setCart((c) => {
@@ -161,15 +178,22 @@ function Home() {
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {PRODUCTS.map((p) => (
-            <article key={p.id} className="card-soft overflow-hidden">
+            <article key={p.id} className="card-soft relative overflow-hidden">
               <img
                 src={p.image}
                 alt={`${p.name} — ${p.marathi}`}
                 loading="lazy"
                 width={800}
                 height={800}
-                className="h-44 w-full object-cover transition-transform duration-300 hover:scale-105"
+                className={`h-44 w-full object-cover transition-transform duration-300 hover:scale-105 ${
+                  avail[p.id] === false ? "grayscale" : ""
+                }`}
               />
+              {avail[p.id] === false && (
+                <span className="absolute left-3 top-3 rounded-full bg-destructive px-3 py-1 text-xs font-bold text-destructive-foreground">
+                  Not available today
+                </span>
+              )}
               <div className="p-4">
                 <div className="flex items-baseline justify-between gap-2">
                   <h3 className="text-lg font-bold">{p.name}</h3>
@@ -199,9 +223,10 @@ function Home() {
                   </div>
                   <button
                     onClick={() => addToCart(p.id)}
-                    className="h-11 flex-1 rounded-full warm-gradient font-bold text-primary-foreground transition-transform active:scale-95"
+                    disabled={avail[p.id] === false}
+                    className="h-11 flex-1 rounded-full warm-gradient font-bold text-primary-foreground transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100"
                   >
-                    Add to Cart
+                    {avail[p.id] === false ? "Unavailable" : "Add to Cart"}
                   </button>
                 </div>
               </div>
