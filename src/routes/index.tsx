@@ -97,11 +97,15 @@ function Home() {
             <a href="#home" className="hidden sm:inline">
               Home
             </a>
-            <a href="#menu">Menu</a>
-            <a href="#contact">Contact</a>
+            <a href="#menu" className="hidden sm:inline">
+              Menu
+            </a>
+            <a href="#contact" className="hidden sm:inline">
+              Contact
+            </a>
             <Link
               to="/admin"
-              className="hidden rounded-full border border-primary px-3 py-2 text-primary sm:inline-block"
+              className="rounded-full border border-primary px-3 py-2 text-xs text-primary sm:text-sm"
             >
               Admin
             </Link>
