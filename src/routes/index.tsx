@@ -93,12 +93,18 @@ function Home() {
           <a href="#home" className="text-lg font-bold leading-tight text-primary">
             Anand Bel Bhandar
           </a>
-          <nav className="flex items-center gap-3 text-sm font-semibold">
+          <nav className="flex items-center gap-2 text-sm font-semibold sm:gap-3">
             <a href="#home" className="hidden sm:inline">
               Home
             </a>
             <a href="#menu">Menu</a>
             <a href="#contact">Contact</a>
+            <Link
+              to="/admin"
+              className="hidden rounded-full border border-primary px-3 py-2 text-primary sm:inline-block"
+            >
+              Admin
+            </Link>
             <button
               onClick={() => {
                 setStep(placed && cart.length === 0 ? "done" : "cart");
