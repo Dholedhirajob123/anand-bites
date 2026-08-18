@@ -315,20 +315,32 @@ function Home() {
 
       {/* Address */}
       <section id="contact" className="mx-auto max-w-3xl px-4 pb-10">
-        <div className="card-soft p-5">
-          <h2 className="text-xl font-bold">📍 Anand Bel Bhandar</h2>
-          <p className="mt-1 text-muted-foreground">Address: {SHOP.address}</p>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        <div className="card-soft overflow-hidden">
+          <iframe
+            title="Anand Bel Bhandar location map"
+            src={`https://www.google.com/maps?q=${encodeURIComponent(
               `${SHOP.name} ${SHOP.address}`,
-            )}`}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-4 inline-flex rounded-full border-2 border-primary px-6 py-3 font-bold text-primary"
-          >
-            Get Directions
-          </a>
+            )}&output=embed`}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="h-64 w-full border-0"
+          />
+          <div className="p-5">
+            <h2 className="text-xl font-bold">📍 Anand Bel Bhandar</h2>
+            <p className="mt-1 text-muted-foreground">Address: {SHOP.address}</p>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                `${SHOP.name} ${SHOP.address}`,
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex rounded-full border-2 border-primary px-6 py-3 font-bold text-primary"
+            >
+              Get Directions
+            </a>
+          </div>
         </div>
+
       </section>
 
       {/* Final CTA */}
