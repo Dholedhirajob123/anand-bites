@@ -244,7 +244,18 @@ function AdminPage() {
                 {o.name} · {o.phone}
               </p>
               <p className="text-sm text-muted-foreground">{o.address}</p>
+              {o.location && (
+                <a
+                  href={mapsLink(o.location)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 inline-block text-sm font-semibold text-primary underline"
+                >
+                  📍 View live location
+                </a>
+              )}
               {o.note ? <p className="mt-1 text-sm italic">“{o.note}”</p> : null}
+
               <ul className="mt-3 space-y-1 text-sm">
                 {o.items.map((i) => (
                   <li key={i.id} className="flex justify-between">
