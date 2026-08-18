@@ -188,24 +188,57 @@ function Home() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section id="home" className="relative">
-        <img
-          src={hero}
-          alt="Anand Bel Bhandar snack counter with hot samosas and bhel"
-          width={1400}
-          height={900}
-          className="h-[62vh] min-h-72 w-full object-cover"
-        />
+      {/* Hero slider */}
+      <section id="home" className="relative h-[62vh] min-h-72 overflow-hidden">
+        {SLIDES.map((s, i) => (
+          <img
+            key={i}
+            src={s.image}
+            alt={s.title}
+            width={1400}
+            height={900}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+              i === slide ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/45 to-transparent" />
+
+        <button
+          aria-label="Previous slide"
+          onClick={() => setSlide((s) => (s - 1 + SLIDES.length) % SLIDES.length)}
+          className="absolute left-2 top-1/2 z-10 h-10 w-10 -translate-y-1/2 rounded-full bg-card/80 text-xl font-bold text-primary"
+        >
+          ‹
+        </button>
+        <button
+          aria-label="Next slide"
+          onClick={() => setSlide((s) => (s + 1) % SLIDES.length)}
+          className="absolute right-2 top-1/2 z-10 h-10 w-10 -translate-y-1/2 rounded-full bg-card/80 text-xl font-bold text-primary"
+        >
+          ›
+        </button>
+
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-4 pb-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-accent">
             Anand Bel Bhandar
           </p>
           <h1 className="mt-2 text-3xl font-bold leading-snug text-primary-foreground sm:text-4xl">
-            गरमागरम नाश्ता, आता ऑनलाइन ऑर्डर करा!
+            {SLIDES[slide]!.title}
           </h1>
-          <p className="mt-2 text-primary-foreground/90">ताजे आणि चविष्ट नाश्त्याचे पदार्थ</p>
+          <p className="mt-2 text-primary-foreground/90">{SLIDES[slide]!.sub}</p>
+          <div className="mt-4 flex gap-2">
+            {SLIDES.map((_, i) => (
+              <button
+                key={i}
+                aria-label={`Go to slide ${i + 1}`}
+                onClick={() => setSlide(i)}
+                className={`h-2 rounded-full transition-all ${
+                  i === slide ? "w-7 bg-accent" : "w-2 bg-primary-foreground/60"
+                }`}
+              />
+            ))}
+          </div>
           <a
             href="#menu"
             className="mt-5 inline-flex items-center justify-center rounded-full warm-gradient px-8 py-4 text-lg font-bold text-primary-foreground shadow-lg transition-transform active:scale-95"
@@ -214,6 +247,7 @@ function Home() {
           </a>
         </div>
       </section>
+
 
       {/* Menu */}
       <section id="menu" className="mx-auto max-w-3xl px-4 py-10">
