@@ -58,6 +58,35 @@ function Home() {
   const [avail, setAvail] = useState<Availability>(() =>
     Object.fromEntries(PRODUCTS.map((p) => [p.id, true])),
   );
+  const [slide, setSlide] = useState(0);
+  const [loc, setLoc] = useState<GeoLocation | null>(null);
+  const [locState, setLocState] = useState<"idle" | "loading" | "error">("idle");
+
+  useEffect(() => {
+    const t = setInterval(() => setSlide((s) => (s + 1) % SLIDES.length), 4000);
+    return () => clearInterval(t);
+  }, []);
+
+  const shareLocation = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocState("error");
+      return;
+    }
+    setLocState("loading");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLoc({
+          lat: +pos.coords.latitude.toFixed(6),
+          lng: +pos.coords.longitude.toFixed(6),
+          accuracy: Math.round(pos.coords.accuracy),
+          at: new Date().toISOString(),
+        });
+        setLocState("idle");
+      },
+      () => setLocState("error"),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
 
   useEffect(() => {
     const sync = () => setAvail(loadAvailability());
@@ -69,6 +98,7 @@ function Home() {
       window.removeEventListener("storage", sync);
     };
   }, []);
+
 
   const total = useMemo(() => cart.reduce((s, l) => s + l.price * l.qty, 0), [cart]);
   const count = cart.reduce((s, l) => s + l.qty, 0);
