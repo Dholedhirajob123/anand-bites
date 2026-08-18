@@ -82,6 +82,7 @@ function AdminPage() {
 
   const today = dayKey(new Date());
   const tomorrow = dayKey(new Date(Date.now() + 86400000));
+  const yesterday = dayKey(new Date(Date.now() - 86400000));
 
   const dayOrders = useMemo(
     () => orders.filter((o) => dayKey(o.createdAt) === day),
@@ -95,6 +96,63 @@ function AdminPage() {
     [orders, month],
   );
   const monthTotal = monthOrders.reduce((s, o) => s + o.total, 0);
+
+  const year = day.slice(0, 4);
+  const yearOrders = useMemo(
+    () => orders.filter((o) => dayKey(o.createdAt).slice(0, 4) === year),
+    [orders, year],
+  );
+  const yearTotal = yearOrders.reduce((s, o) => s + o.total, 0);
+
+  // Month-by-month breakdown for the selected year
+  const monthlyRows = useMemo(() => {
+    const map = new Map<string, { orders: number; total: number }>();
+    for (const o of yearOrders) {
+      const k = dayKey(o.createdAt).slice(0, 7);
+      const cur = map.get(k) ?? { orders: 0, total: 0 };
+      map.set(k, { orders: cur.orders + 1, total: cur.total + o.total });
+    }
+    return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [yearOrders]);
+
+  // Item-wise sales for the selected day
+  const itemRows = useMemo(() => {
+    const map = new Map<string, { name: string; qty: number; total: number }>();
+    for (const o of dayOrders)
+      for (const i of o.items) {
+        const cur = map.get(i.id) ?? { name: i.name, qty: 0, total: 0 };
+        map.set(i.id, { name: i.name, qty: cur.qty + i.qty, total: cur.total + i.price * i.qty });
+      }
+    return [...map.values()].sort((a, b) => b.total - a.total);
+  }, [dayOrders]);
+
+  const exportCsv = (rows: Order[], label: string) => {
+    const head = "Order ID,Date,Time,Customer,Phone,Address,Items,Total,Status";
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const body = rows.map((o) => {
+      const d = new Date(o.createdAt);
+      return [
+        o.id,
+        dayKey(d),
+        d.toLocaleTimeString(),
+        esc(o.name),
+        o.phone,
+        esc(o.address),
+        esc(o.items.map((i) => `${i.name} x${i.qty}`).join("; ")),
+        String(o.total),
+        o.status,
+      ].join(",");
+    });
+    const total = rows.reduce((s, o) => s + o.total, 0);
+    const csv = [head, ...body, `,,,,,,TOTAL,${total},`].join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `anand-bel-bhandar-${label}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 
   if (!authed) {
     return (
@@ -196,6 +254,12 @@ function AdminPage() {
       <div className="card-soft mt-5 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <button
+            onClick={() => setDay(yesterday)}
+            className={`rounded-full px-4 py-2 text-sm font-semibold ${day === yesterday ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
+          >
+            Yesterday
+          </button>
+          <button
             onClick={() => setDay(today)}
             className={`rounded-full px-4 py-2 text-sm font-semibold ${day === today ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
           >
@@ -214,19 +278,92 @@ function AdminPage() {
             className="h-10 rounded-xl border bg-background px-3 text-sm outline-none focus:border-primary"
           />
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-3 text-center">
+        <div className="mt-4 grid grid-cols-3 gap-3 text-center">
           <div className="rounded-2xl bg-secondary p-3">
-            <p className="text-xs text-muted-foreground">Orders on {day}</p>
+            <p className="text-xs text-muted-foreground">Day {day}</p>
             <p className="text-xl font-bold">{dayOrders.length}</p>
             <p className="font-bold text-primary">{rupees(dayTotal)}</p>
           </div>
           <div className="rounded-2xl bg-secondary p-3">
             <p className="text-xs text-muted-foreground">Month {month}</p>
-            <p className="text-xl font-bold">{monthOrders.length} orders</p>
+            <p className="text-xl font-bold">{monthOrders.length}</p>
             <p className="font-bold text-primary">{rupees(monthTotal)}</p>
           </div>
+          <div className="rounded-2xl bg-secondary p-3">
+            <p className="text-xs text-muted-foreground">Year {year}</p>
+            <p className="text-xl font-bold">{yearOrders.length}</p>
+            <p className="font-bold text-primary">{rupees(yearTotal)}</p>
+          </div>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            onClick={() => exportCsv(dayOrders, day)}
+            className="rounded-full border border-primary px-4 py-2 text-xs font-bold text-primary"
+          >
+            Download day sheet
+          </button>
+          <button
+            onClick={() => exportCsv(monthOrders, month)}
+            className="rounded-full border border-primary px-4 py-2 text-xs font-bold text-primary"
+          >
+            Download month sheet
+          </button>
+          <button
+            onClick={() => exportCsv(yearOrders, year)}
+            className="rounded-full border border-primary px-4 py-2 text-xs font-bold text-primary"
+          >
+            Download year sheet
+          </button>
         </div>
       </div>
+
+      {/* Item-wise sales for the selected day */}
+      <div className="card-soft mt-5 p-4">
+        <h2 className="font-bold">Item-wise sales · {day}</h2>
+        {itemRows.length === 0 ? (
+          <p className="mt-2 text-sm text-muted-foreground">No sales on this date.</p>
+        ) : (
+          <ul className="mt-3 space-y-2 text-sm">
+            {itemRows.map((r) => (
+              <li key={r.name} className="flex justify-between rounded-xl bg-secondary px-3 py-2">
+                <span className="font-semibold">
+                  {r.name} × {r.qty}
+                </span>
+                <span className="font-bold text-primary">{rupees(r.total)}</span>
+              </li>
+            ))}
+            <li className="flex justify-between border-t pt-2 font-bold">
+              <span>Day total</span>
+              <span className="text-primary">{rupees(dayTotal)}</span>
+            </li>
+          </ul>
+        )}
+      </div>
+
+      {/* Month-wise breakdown for the year */}
+      <div className="card-soft mt-5 p-4">
+        <h2 className="font-bold">Month-wise earnings · {year}</h2>
+        {monthlyRows.length === 0 ? (
+          <p className="mt-2 text-sm text-muted-foreground">No orders this year.</p>
+        ) : (
+          <ul className="mt-3 space-y-2 text-sm">
+            {monthlyRows.map(([m, v]) => (
+              <li key={m} className="flex items-center justify-between rounded-xl bg-secondary px-3 py-2">
+                <button onClick={() => setDay(`${m}-01`)} className="font-semibold underline-offset-2 hover:underline">
+                  {m}
+                </button>
+                <span className="text-muted-foreground">{v.orders} orders</span>
+                <span className="font-bold text-primary">{rupees(v.total)}</span>
+              </li>
+            ))}
+            <li className="flex justify-between border-t pt-2 font-bold">
+              <span>Year total</span>
+              <span className="text-primary">{rupees(yearTotal)}</span>
+            </li>
+          </ul>
+        )}
+      </div>
+
 
       {dayOrders.length === 0 ? (
         <p className="mt-8 text-muted-foreground">No orders on this date.</p>
