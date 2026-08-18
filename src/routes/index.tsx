@@ -11,8 +11,19 @@ import {
   loadAvailability,
   type Availability,
   type CartLine,
+  type GeoLocation,
   type Order,
 } from "@/lib/shop";
+
+const SLIDES = [
+  { image: hero, title: "गरमागरम नाश्ता, आता ऑनलाइन ऑर्डर करा!", sub: "ताजे आणि चविष्ट नाश्त्याचे पदार्थ" },
+  ...PRODUCTS.map((p) => ({
+    image: p.image,
+    title: `${p.name} — ${p.marathi}`,
+    sub: `फक्त ${rupees(p.price)} · ताजे आणि गरम`,
+  })),
+];
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
