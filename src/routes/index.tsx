@@ -454,6 +454,31 @@ function Home() {
                     />
                   </label>
                 ))}
+
+                <div className="rounded-2xl border border-dashed border-primary/50 p-3">
+                  <button
+                    type="button"
+                    onClick={shareLocation}
+                    className="w-full rounded-full bg-secondary py-3 text-sm font-bold text-secondary-foreground"
+                  >
+                    {locState === "loading"
+                      ? "Getting location…"
+                      : loc
+                        ? "📍 Live location shared ✓"
+                        : "📍 Share my live location"}
+                  </button>
+                  {loc && (
+                    <p className="mt-2 text-center text-xs text-muted-foreground">
+                      {loc.lat}, {loc.lng} (±{loc.accuracy}m) — admin can see this on the map
+                    </p>
+                  )}
+                  {locState === "error" && (
+                    <p className="mt-2 text-center text-xs text-destructive">
+                      Location not available. Please allow location access.
+                    </p>
+                  )}
+                </div>
+
                 <div className="rounded-2xl bg-secondary p-3 text-sm">
                   {cart.map((l) => (
                     <div key={l.id} className="flex justify-between">
