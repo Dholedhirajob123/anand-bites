@@ -328,6 +328,29 @@ function AdminPage() {
                 <span className="font-semibold text-muted-foreground">Address:</span>{" "}
                 {detail.address}
               </p>
+              {detail.location && (
+                <div>
+                  <p>
+                    <span className="font-semibold text-muted-foreground">Live Location:</span>{" "}
+                    {detail.location.lat}, {detail.location.lng}
+                  </p>
+                  <iframe
+                    title="Customer live location"
+                    src={`https://www.google.com/maps?q=${detail.location.lat},${detail.location.lng}&z=16&output=embed`}
+                    loading="lazy"
+                    className="mt-2 h-44 w-full rounded-xl border-0"
+                  />
+                  <a
+                    href={mapsLink(detail.location)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-block font-semibold text-primary underline"
+                  >
+                    Open in Google Maps
+                  </a>
+                </div>
+              )}
+
               {detail.note && (
                 <p>
                   <span className="font-semibold text-muted-foreground">Note:</span>{" "}
