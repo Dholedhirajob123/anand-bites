@@ -26,6 +26,8 @@ export type CartLine = { id: string; name: string; price: number; qty: number };
 
 export type OrderStatus = "New" | "Preparing" | "Ready" | "Completed";
 
+export type GeoLocation = { lat: number; lng: number; accuracy?: number; at: string };
+
 export type Order = {
   id: string;
   createdAt: string;
@@ -33,10 +35,15 @@ export type Order = {
   phone: string;
   address: string;
   note?: string | undefined;
+  location?: GeoLocation | undefined;
   items: CartLine[];
   total: number;
   status: OrderStatus;
 };
+
+export const mapsLink = (l: GeoLocation) =>
+  `https://www.google.com/maps/search/?api=1&query=${l.lat},${l.lng}`;
+
 
 export const ORDER_STATUSES: OrderStatus[] = ["New", "Preparing", "Ready", "Completed"];
 
