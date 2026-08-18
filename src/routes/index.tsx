@@ -133,6 +133,7 @@ function Home() {
       phone: form.phone,
       address: form.address,
       note: form.note || undefined,
+      location: loc ?? undefined,
       items: cart,
       total,
       status: "New",
@@ -141,7 +142,9 @@ function Home() {
     setPlaced(order);
     setStep("done");
     setCart([]);
+    setLoc(null);
     setForm({ name: "", phone: "", address: "", note: "" });
+
   };
 
   return (
