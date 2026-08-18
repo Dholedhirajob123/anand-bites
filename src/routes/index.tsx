@@ -11,8 +11,19 @@ import {
   loadAvailability,
   type Availability,
   type CartLine,
+  type GeoLocation,
   type Order,
 } from "@/lib/shop";
+
+const SLIDES = [
+  { image: hero, title: "गरमागरम नाश्ता, आता ऑनलाइन ऑर्डर करा!", sub: "ताजे आणि चविष्ट नाश्त्याचे पदार्थ" },
+  ...PRODUCTS.map((p) => ({
+    image: p.image,
+    title: `${p.name} — ${p.marathi}`,
+    sub: `फक्त ${rupees(p.price)} · ताजे आणि गरम`,
+  })),
+];
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,6 +58,35 @@ function Home() {
   const [avail, setAvail] = useState<Availability>(() =>
     Object.fromEntries(PRODUCTS.map((p) => [p.id, true])),
   );
+  const [slide, setSlide] = useState(0);
+  const [loc, setLoc] = useState<GeoLocation | null>(null);
+  const [locState, setLocState] = useState<"idle" | "loading" | "error">("idle");
+
+  useEffect(() => {
+    const t = setInterval(() => setSlide((s) => (s + 1) % SLIDES.length), 4000);
+    return () => clearInterval(t);
+  }, []);
+
+  const shareLocation = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocState("error");
+      return;
+    }
+    setLocState("loading");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLoc({
+          lat: +pos.coords.latitude.toFixed(6),
+          lng: +pos.coords.longitude.toFixed(6),
+          accuracy: Math.round(pos.coords.accuracy),
+          at: new Date().toISOString(),
+        });
+        setLocState("idle");
+      },
+      () => setLocState("error"),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
 
   useEffect(() => {
     const sync = () => setAvail(loadAvailability());
@@ -58,6 +98,7 @@ function Home() {
       window.removeEventListener("storage", sync);
     };
   }, []);
+
 
   const total = useMemo(() => cart.reduce((s, l) => s + l.price * l.qty, 0), [cart]);
   const count = cart.reduce((s, l) => s + l.qty, 0);
@@ -92,6 +133,7 @@ function Home() {
       phone: form.phone,
       address: form.address,
       note: form.note || undefined,
+      location: loc ?? undefined,
       items: cart,
       total,
       status: "New",
@@ -100,7 +142,9 @@ function Home() {
     setPlaced(order);
     setStep("done");
     setCart([]);
+    setLoc(null);
     setForm({ name: "", phone: "", address: "", note: "" });
+
   };
 
   return (
@@ -144,24 +188,57 @@ function Home() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section id="home" className="relative">
-        <img
-          src={hero}
-          alt="Anand Bel Bhandar snack counter with hot samosas and bhel"
-          width={1400}
-          height={900}
-          className="h-[62vh] min-h-72 w-full object-cover"
-        />
+      {/* Hero slider */}
+      <section id="home" className="relative h-[62vh] min-h-72 overflow-hidden">
+        {SLIDES.map((s, i) => (
+          <img
+            key={i}
+            src={s.image}
+            alt={s.title}
+            width={1400}
+            height={900}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+              i === slide ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/45 to-transparent" />
+
+        <button
+          aria-label="Previous slide"
+          onClick={() => setSlide((s) => (s - 1 + SLIDES.length) % SLIDES.length)}
+          className="absolute left-2 top-1/2 z-10 h-10 w-10 -translate-y-1/2 rounded-full bg-card/80 text-xl font-bold text-primary"
+        >
+          ‹
+        </button>
+        <button
+          aria-label="Next slide"
+          onClick={() => setSlide((s) => (s + 1) % SLIDES.length)}
+          className="absolute right-2 top-1/2 z-10 h-10 w-10 -translate-y-1/2 rounded-full bg-card/80 text-xl font-bold text-primary"
+        >
+          ›
+        </button>
+
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-4 pb-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-accent">
             Anand Bel Bhandar
           </p>
           <h1 className="mt-2 text-3xl font-bold leading-snug text-primary-foreground sm:text-4xl">
-            गरमागरम नाश्ता, आता ऑनलाइन ऑर्डर करा!
+            {SLIDES[slide]!.title}
           </h1>
-          <p className="mt-2 text-primary-foreground/90">ताजे आणि चविष्ट नाश्त्याचे पदार्थ</p>
+          <p className="mt-2 text-primary-foreground/90">{SLIDES[slide]!.sub}</p>
+          <div className="mt-4 flex gap-2">
+            {SLIDES.map((_, i) => (
+              <button
+                key={i}
+                aria-label={`Go to slide ${i + 1}`}
+                onClick={() => setSlide(i)}
+                className={`h-2 rounded-full transition-all ${
+                  i === slide ? "w-7 bg-accent" : "w-2 bg-primary-foreground/60"
+                }`}
+              />
+            ))}
+          </div>
           <a
             href="#menu"
             className="mt-5 inline-flex items-center justify-center rounded-full warm-gradient px-8 py-4 text-lg font-bold text-primary-foreground shadow-lg transition-transform active:scale-95"
@@ -170,6 +247,7 @@ function Home() {
           </a>
         </div>
       </section>
+
 
       {/* Menu */}
       <section id="menu" className="mx-auto max-w-3xl px-4 py-10">
@@ -237,20 +315,32 @@ function Home() {
 
       {/* Address */}
       <section id="contact" className="mx-auto max-w-3xl px-4 pb-10">
-        <div className="card-soft p-5">
-          <h2 className="text-xl font-bold">📍 Anand Bel Bhandar</h2>
-          <p className="mt-1 text-muted-foreground">Address: {SHOP.address}</p>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        <div className="card-soft overflow-hidden">
+          <iframe
+            title="Anand Bel Bhandar location map"
+            src={`https://www.google.com/maps?q=${encodeURIComponent(
               `${SHOP.name} ${SHOP.address}`,
-            )}`}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-4 inline-flex rounded-full border-2 border-primary px-6 py-3 font-bold text-primary"
-          >
-            Get Directions
-          </a>
+            )}&output=embed`}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="h-64 w-full border-0"
+          />
+          <div className="p-5">
+            <h2 className="text-xl font-bold">📍 Anand Bel Bhandar</h2>
+            <p className="mt-1 text-muted-foreground">Address: {SHOP.address}</p>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                `${SHOP.name} ${SHOP.address}`,
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex rounded-full border-2 border-primary px-6 py-3 font-bold text-primary"
+            >
+              Get Directions
+            </a>
+          </div>
         </div>
+
       </section>
 
       {/* Final CTA */}
@@ -364,6 +454,31 @@ function Home() {
                     />
                   </label>
                 ))}
+
+                <div className="rounded-2xl border border-dashed border-primary/50 p-3">
+                  <button
+                    type="button"
+                    onClick={shareLocation}
+                    className="w-full rounded-full bg-secondary py-3 text-sm font-bold text-secondary-foreground"
+                  >
+                    {locState === "loading"
+                      ? "Getting location…"
+                      : loc
+                        ? "📍 Live location shared ✓"
+                        : "📍 Share my live location"}
+                  </button>
+                  {loc && (
+                    <p className="mt-2 text-center text-xs text-muted-foreground">
+                      {loc.lat}, {loc.lng} (±{loc.accuracy}m) — admin can see this on the map
+                    </p>
+                  )}
+                  {locState === "error" && (
+                    <p className="mt-2 text-center text-xs text-destructive">
+                      Location not available. Please allow location access.
+                    </p>
+                  )}
+                </div>
+
                 <div className="rounded-2xl bg-secondary p-3 text-sm">
                   {cart.map((l) => (
                     <div key={l.id} className="flex justify-between">

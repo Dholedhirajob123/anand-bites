@@ -11,6 +11,7 @@ import {
   type Availability,
   type Order,
   type OrderStatus,
+  mapsLink,
 } from "@/lib/shop";
 
 const ADMIN_USER = "anand@123";
@@ -243,7 +244,18 @@ function AdminPage() {
                 {o.name} · {o.phone}
               </p>
               <p className="text-sm text-muted-foreground">{o.address}</p>
+              {o.location && (
+                <a
+                  href={mapsLink(o.location)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 inline-block text-sm font-semibold text-primary underline"
+                >
+                  📍 View live location
+                </a>
+              )}
               {o.note ? <p className="mt-1 text-sm italic">“{o.note}”</p> : null}
+
               <ul className="mt-3 space-y-1 text-sm">
                 {o.items.map((i) => (
                   <li key={i.id} className="flex justify-between">
@@ -316,6 +328,29 @@ function AdminPage() {
                 <span className="font-semibold text-muted-foreground">Address:</span>{" "}
                 {detail.address}
               </p>
+              {detail.location && (
+                <div>
+                  <p>
+                    <span className="font-semibold text-muted-foreground">Live Location:</span>{" "}
+                    {detail.location.lat}, {detail.location.lng}
+                  </p>
+                  <iframe
+                    title="Customer live location"
+                    src={`https://www.google.com/maps?q=${detail.location.lat},${detail.location.lng}&z=16&output=embed`}
+                    loading="lazy"
+                    className="mt-2 h-44 w-full rounded-xl border-0"
+                  />
+                  <a
+                    href={mapsLink(detail.location)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-block font-semibold text-primary underline"
+                  >
+                    Open in Google Maps
+                  </a>
+                </div>
+              )}
+
               {detail.note && (
                 <p>
                   <span className="font-semibold text-muted-foreground">Note:</span>{" "}
