@@ -148,7 +148,7 @@ function AdminPage() {
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `anand-bel-bhandar-${label}.csv`;
+    a.download = `annaphurna-${label}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
