@@ -17,7 +17,7 @@ export const PRODUCTS: Product[] = [
 ];
 
 export const SHOP = {
-  name: "Annaphurna",
+  name: "Anand Bel Bhandar",
   address: "Bharat Junior college, Risod",
   phone: "",
 };
