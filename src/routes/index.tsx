@@ -356,11 +356,19 @@ function Home() {
         </a>
       </section>
 
-      <footer className="px-4 py-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Annaphurna ·{" "}
-        <Link to="/admin" className="font-semibold text-primary">
-          Owner Orders
-        </Link>
+      <footer className="space-y-1 px-4 py-6 text-center text-sm text-muted-foreground">
+        <p>
+          © {new Date().getFullYear()} Annaphurna ·{" "}
+          <Link to="/admin" className="font-semibold text-primary">
+            Owner Orders
+          </Link>
+        </p>
+        <p>
+          Created by <span className="font-semibold">Kalinka Global Services</span> · Contact{" "}
+          <a href="tel:+917218298534" className="font-semibold text-primary">
+            7218298534
+          </a>
+        </p>
       </footer>
 
       {/* Cart / Order drawer */}
