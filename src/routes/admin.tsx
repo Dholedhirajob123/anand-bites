@@ -21,13 +21,13 @@ const AUTH_KEY = "abb_admin_ok";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Orders Dashboard — Anand Bel Bhandar" },
+      { title: "Orders Dashboard — Annaphurna" },
       {
         name: "description",
         content:
-          "Owner dashboard for Anand Bel Bhandar: view incoming snack orders, customer details and update order status.",
+          "Owner dashboard for Annaphurna: view incoming snack orders, customer details and update order status.",
       },
-      { property: "og:title", content: "Orders Dashboard — Anand Bel Bhandar" },
+      { property: "og:title", content: "Orders Dashboard — Annaphurna" },
       {
         property: "og:description",
         content: "View incoming orders and update their status.",
@@ -168,7 +168,7 @@ function AdminPage() {
           className="card-soft space-y-3 p-5"
         >
           <h1 className="text-2xl font-bold">Owner Login</h1>
-          <p className="text-sm text-muted-foreground">Anand Bel Bhandar admin</p>
+          <p className="text-sm text-muted-foreground">Annaphurna admin</p>
           <label className="block">
             <span className="text-sm font-semibold">Username</span>
             <input

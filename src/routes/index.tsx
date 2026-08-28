@@ -28,13 +28,13 @@ const SLIDES = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Anand Bel Bhandar — गरमागरम नाश्ता ऑनलाइन" },
+      { title: "Annaphurna — गरमागरम नाश्ता ऑनलाइन" },
       {
         name: "description",
         content:
-          "Order fresh Bel, Mung Vada and Samosa online from Anand Bel Bhandar. ताजे आणि चविष्ट नाश्त्याचे पदार्थ, फक्त ₹15.",
+          "Order fresh Bel, Mung Vada and Samosa online from Annaphurna. ताजे आणि चविष्ट नाश्त्याचे पदार्थ, फक्त ₹15.",
       },
-      { property: "og:title", content: "Anand Bel Bhandar — गरमागरम नाश्ता ऑनलाइन" },
+      { property: "og:title", content: "Annaphurna — गरमागरम नाश्ता ऑनलाइन" },
       {
         property: "og:description",
         content: "Bel, Mung Vada आणि Samosa — ताजे, गरम आणि ऑनलाइन ऑर्डरसाठी तयार.",
@@ -152,7 +152,7 @@ function Home() {
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <a href="#home" className="text-lg font-bold leading-tight text-primary">
-            Anand Bel Bhandar
+            Annaphurna
           </a>
           <nav className="flex items-center gap-2 text-sm font-semibold sm:gap-3">
             <a href="#home" className="hidden sm:inline">
@@ -221,7 +221,7 @@ function Home() {
 
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-4 pb-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-accent">
-            Anand Bel Bhandar
+            Annaphurna
           </p>
           <h1 className="mt-2 text-3xl font-bold leading-snug text-primary-foreground sm:text-4xl">
             {SLIDES[slide]!.title}
@@ -317,7 +317,7 @@ function Home() {
       <section id="contact" className="mx-auto max-w-3xl px-4 pb-10">
         <div className="card-soft overflow-hidden">
           <iframe
-            title="Anand Bel Bhandar location map"
+            title="Annaphurna location map"
             src={`https://www.google.com/maps?q=${encodeURIComponent(
               `${SHOP.name} ${SHOP.address}`,
             )}&output=embed`}
@@ -326,7 +326,7 @@ function Home() {
             className="h-64 w-full border-0"
           />
           <div className="p-5">
-            <h2 className="text-xl font-bold">📍 Anand Bel Bhandar</h2>
+            <h2 className="text-xl font-bold">📍 Annaphurna</h2>
             <p className="mt-1 text-muted-foreground">Address: {SHOP.address}</p>
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -346,7 +346,7 @@ function Home() {
       {/* Final CTA */}
       <section className="warm-gradient px-4 py-12 text-center">
         <h2 className="text-2xl font-bold text-primary-foreground">
-          आजच ऑर्डर करा – Anand Bel Bhandar
+          आजच ऑर्डर करा – Annaphurna
         </h2>
         <a
           href="#menu"
@@ -357,7 +357,7 @@ function Home() {
       </section>
 
       <footer className="px-4 py-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Anand Bel Bhandar ·{" "}
+        © {new Date().getFullYear()} Annaphurna ·{" "}
         <Link to="/admin" className="font-semibold text-primary">
           Owner Orders
         </Link>
