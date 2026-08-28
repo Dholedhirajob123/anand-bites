@@ -21,13 +21,13 @@ const AUTH_KEY = "abb_admin_ok";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Orders Dashboard — Anand Bel Bhandar" },
+      { title: "Orders Dashboard — Annapurna" },
       {
         name: "description",
         content:
-          "Owner dashboard for Anand Bel Bhandar: view incoming snack orders, customer details and update order status.",
+          "Owner dashboard for Annapurna: view incoming snack orders, customer details and update order status.",
       },
-      { property: "og:title", content: "Orders Dashboard — Anand Bel Bhandar" },
+      { property: "og:title", content: "Orders Dashboard — Annapurna" },
       {
         property: "og:description",
         content: "View incoming orders and update their status.",
@@ -148,7 +148,7 @@ function AdminPage() {
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `anand-bel-bhandar-${label}.csv`;
+    a.download = `annapurna-${label}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -168,7 +168,7 @@ function AdminPage() {
           className="card-soft space-y-3 p-5"
         >
           <h1 className="text-2xl font-bold">Owner Login</h1>
-          <p className="text-sm text-muted-foreground">Anand Bel Bhandar admin</p>
+          <p className="text-sm text-muted-foreground">Annapurna admin</p>
           <label className="block">
             <span className="text-sm font-semibold">Username</span>
             <input
